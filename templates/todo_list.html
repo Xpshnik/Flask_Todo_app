@@ -21,7 +21,7 @@
         <span class="btn btn-outline-success">Completed</span>
         {% endif %}
 
-        <a class="btn btn-primary" href="/update/{{ todo.id }}">Update</a>
+        <a class="btn btn-primary" href="/update/{{ todo.id }}">Toggle status</a>
         <a class="btn btn-danger" href="/delete/{{ todo.id }}">Delete</a>
     </div>
     {% endfor %}
