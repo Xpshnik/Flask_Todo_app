@@ -2,31 +2,62 @@
 
 {% block content %}
     <form action="/add" method="post">
-        <div class="row mb-3">
-            <label class="form-label">Task to do</label>
-            <input class="form-control" type="text" name="task_name" placeholder="Enter Todo..."><br>
-        </div>
-        <button class="btn btn-primary" type="submit">Add</button>
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Manage your tasks! ;)</legend>
+            <div class="form-group">
+                {{ form.task_name.label(class="form-control-label") }}
+                {% if form.task_name.errors %}
+                    {{ form.task_name(class="form-control form-control-lg is-invalid", placeholder="Enter Todo...") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.task_name.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.task_name(class="form-control form-control-lg", placeholder="Enter Todo...") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.is_urgent.label(class="form-label") }}
+                {{ form.is_urgent() }}
+            </div>
+
+            {% if form.errors.csrf_token %}
+            <div class="invalid-feedback">
+                <span>Token has expired. Just reload the page and it should be fine ;)</span>
+            </div>
+            {% endif %}
+            
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </fieldset>
     </form>
 
     <hr>
 
     {% for todo in todo_list %}
     <div class="row mb-3">
-        <p class="h3">{{ todo.id }} | {{ todo.task_name }}</p>
+        {% if todo.is_urgent and not todo.is_completed %}
+            <p class="h3 alert alert-danger" role="alert">{{ todo.id }} | {{ todo.task_name }}</p>
+        {% elif todo.is_completed %}
+            <p class="h3 alert alert-success" role="alert">{{ todo.id }} | {{ todo.task_name }}</p>
+        {% else %}
+            <p class="h3">{{ todo.id }} | {{ todo.task_name }}</p>
+        {% endif %}
 
         <div class="btn-group" role="group">
-            
-            <div class="col-sm">
-                {% if todo.completed == False %}
+
+            <div>
+                {% if todo.is_completed == False %}
                     <span class="btn btn-outline-warning">Not Completed</span>
                 {% else %}
                     <span class="btn btn-outline-success">Completed</span>
                 {% endif %}
-                
+
                 <a class="btn btn-primary" href="/update/{{ todo.id }}">Toggle status</a>
                 <a class="btn btn-danger" href="/delete/{{ todo.id }}">Delete</a>
-                
             </div>
 
         </div>
