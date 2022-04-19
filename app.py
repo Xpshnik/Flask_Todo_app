@@ -32,7 +32,7 @@ def add_task():
 
 @app.get('/update/<int:todo_id>')
 def update_task(todo_id):
-    todo = db.sesson.query(Todo).filter(Todo.id == todo_id).first()
+    todo = db.session.query(Todo).filter(Todo.id == todo_id).first()
     todo.completed = not todo.completed
     db.session.commit()
     return redirect(url_for('todo_list'))
